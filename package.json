@@ -9,8 +9,13 @@
 		".": "./src/index.ts"
 	},
 	"dependencies": {
+		"jszip": "^3.10.1",
+		"p5": "^2.3.2",
 		"react": "^19.2.8",
 		"react-dom": "^19.2.8"
+	},
+	"devDependencies": {
+		"@types/p5": "^1.7.7"
 	},
 	"peerDependencies": {
 		"next": "^16.3.0"
