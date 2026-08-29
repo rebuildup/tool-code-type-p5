@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import { RawDOMContainer } from "../../../../external/ui/src/RawDOMContainer";
+import { RawDOMContainer } from "../../../../src/components/tools-ui/RawDOMContainer";
 import { useP5Lifecycle } from "../hooks/useP5Lifecycle";
 import { CanvasContainer } from "./CanvasContainer";
 import { ConfigPanel } from "./ConfigPanel";

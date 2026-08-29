@@ -3,3 +3,12 @@ node_modules/
 dist/
 .vscode/
 *.log
+
+# Agent policy (§30, §31): temporary work artifacts and reference repos
+.tmp/
+.reference/
+
+# OS-specific debris
+.DS_Store
+Thumbs.db
+desktop.ini
