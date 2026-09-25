@@ -84,3 +84,11 @@ test 追加時は §28 (error / warning を 0 に) と §29 (coverage ≥ 80%) �
 - Source-level design → comments + future `docs/design/`
 - Debugging / refactor / review → superpowers 系 Skill (`superpowers:systematic-debugging` 等) を参照
 - CI / release / container / IaC → 現在 project に存在しないため未定義
+
+
+## Constitution / operating profile
+
+- 最上位 contract: [`constitution/CONSTITUTION.md`](constitution/CONSTITUTION.md)
+- current Operating Model: [`organization/profiles/release-driven-solo.md`](organization/profiles/release-driven-solo.md)
+- hidden sibling dependency / client-only / host-integration constraints は、Constitution と両立する限りより具体的な project authority として維持する。
+- project-init operational Skills は `bunx skills` + `skills-lock.json` で継続更新する。
