@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import { RawDOMContainer } from "../../../../src/components/tools-ui/RawDOMContainer";
+import { AppFrame } from "./AppFrame";
 import { useP5Lifecycle } from "../hooks/useP5Lifecycle";
 import { CanvasContainer } from "./CanvasContainer";
 import { ConfigPanel } from "./ConfigPanel";
@@ -83,14 +83,7 @@ export default function CodeTypeP5App() {
 	}, [config, code, editorManagerRef]);
 
 	return (
-		<RawDOMContainer
-			title="Code Type p5"
-			breadcrumbs={[
-				{ label: "Home", href: "/" },
-				{ label: "Tools", href: "/tools" },
-				{ label: "Code Type p5" },
-			]}
-		>
+		<AppFrame title="Code Type p5">
 			<div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
 				<Controls
 					isPlaying={isPlaying}
@@ -114,6 +107,6 @@ export default function CodeTypeP5App() {
 					/>
 				)}
 			</div>
-		</RawDOMContainer>
+		</AppFrame>
 	);
 }
