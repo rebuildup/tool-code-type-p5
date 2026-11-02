@@ -37,6 +37,10 @@
 
 **Reason**: script 不在の状態で CI を組むことは theatre である。validation script は gate として実際に機能する段階で追加する。
 
+> **改訂（2026-11-02, Issue #4）**: standalone build 経路の追加に伴い、`package.json` に
+> `dev` / `build` / `preview` / `type-check` を追加した（§2.2 の「script を追加しない」は
+> ここで失効）。test framework と CI はまだ導入しておらず、§5 の条件 2 / 3 は未達のまま。
+
 ### 2.3 Hidden external dep を **当面 formalize しない**
 
 `src/components/CodeTypeP5App.tsx` の `external/ui/src/RawDOMContainer` import は、現状のまま据え置く。ただし `AGENTS.md` §4 と本 ADR §5 で明示的に制約として記録し、fresh clone で build が壊れることを expected state として扱う。
@@ -48,6 +52,26 @@
 3. `RawDOMContainer` を published package として参照する。
 
 この判断は user agreement が必要な design-first task (§14) であり、init では surface のみを行う。
+
+#### 解決（2026-11-02, Issue #4）
+
+選択肢 2 を採用した: **Tool が自分の shell を所有する**（host の
+`RawDOMContainer` を import しない）。`src/components/AppFrame.tsx` を新設し、
+host 相対 import は 0 件になった。fresh clone で `bun run type-check` と
+`bun run build` が通る。
+
+- **理由**: host の Tool policy（my-web-2026 ADR-0006 §2）は Tool から host の
+  `src/**` への参照を禁じている。選択肢 1（親 workspace に `external/` を置く）は
+  clone 単位の再現性を失い、選択肢 3（published package）は host 側の公開契約が
+  増える。選択肢 2 が host 側の rewiring を要求しない唯一の道だった。
+- **先例**: pilot Tool `tool-color-palette` PR #6 が同じ形（local `AppFrame`）で
+  merge 済み。`tool-text-counter` PR #6 も同じ解決を採った。
+- **事実の訂正**: 本文 §1 / §2.3 が引用していた import path
+  `external/ui/src/RawDOMContainer` はコードと食い違っていた。実際の import は
+  `../../../../src/components/tools-ui/RawDOMContainer` だった（その 4 階層上の
+  checkout に `src/` が存在することが前提）。本節の記載が正確。
+- **結果**: §4 の item #1 は解消。§5 の条件 1（解が定まったら §2.3 を改訂）は
+  本節で満たされた。
 
 ### 2.4 初期 Skill / plugin / MCP は導入しない
 
@@ -80,7 +104,7 @@ Project-local Skill / `.claude/settings.json` 編集 / global plugin 導入 / MC
 
 ### Negative / Debt
 
-- fresh clone では本 repo を **library として build / type-check できない**。consumer app 側に置いて初めて検証可能。
+- fresh clone では本 repo を **library として build / type-check できない**。consumer app 側に置いて初めて検証可能。（2026-11-02 更新: standalone build 経路の追加により、fresh clone でも `bun run type-check` / `bun run build` は通る。host app 内での visual 検証だけが引き続き consumer 側。）
 - test / lint / format 機構が存在しないため、本 ADR 時点では §28 / §29 を満たせない。**existing quality debt** として §4 に列挙。
 - tsconfig 不在で strict でない。既存の `any` 多用は現状維持。
 - `window.*` global protocol は source of truth が存在しない暗黙 API になっている。
@@ -89,7 +113,7 @@ Project-local Skill / `.claude/settings.json` 編集 / global plugin 導入 / MC
 
 | # | Item | Severity | Required decision |
 |---|------|----------|-------------------|
-| 1 | `external/ui/src/RawDOMContainer` hidden dep | High | design-first: §2.3 のいずれか |
+| 1 | `external/ui/src/RawDOMContainer` hidden dep | **Resolved** (2026-11-02, Issue #4) | §2.3「解決」: Tool が local shell (`src/components/AppFrame.tsx`) を所有 |
 | 2 | No test framework, no scripts, no CI | High | policy §28-29 gate が現状未達 |
 | 3 | `tsconfig.json` 不在, strict 不在 | Medium | 必要時に追加 |
 | 4 | `any` 多用 (`useP5Lifecycle.ts`, `BaseAnimation.draw*` 等) | Medium | 段階的 narrowing |

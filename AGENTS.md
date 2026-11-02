@@ -29,18 +29,21 @@ AI コーディングエージェント向けの canonical project contract。
 - p5.js は SSR 不可。`useEffect` 内 / `"use client"` 内でのみ instantiate する。
 - `window.*` globals (`p5`, `JSZip`, `animationFunctions`, `p5Instances`) は current instance coordination のための既存 protocol。新規追加は禁止、既存利用も理由付きで最小化する。
 
-## 4. Critical caveat — hidden sibling-repo dependency
+## 4. Hidden sibling-repo dependency — resolved (Issue #4)
 
-`src/components/CodeTypeP5App.tsx` が以下を import する:
+`src/components/CodeTypeP5App.tsx` はかつて
 
 ```ts
-import { RawDOMContainer } from "../../../../external/ui/src/RawDOMContainer";
+import { RawDOMContainer } from "../../../../src/components/tools-ui/RawDOMContainer";
 ```
 
-これは repository 直上の `external/ui/...` checkout を前提とする。
-fresh clone では `external/` は存在しないため、type-check / bundling は失敗する。
+を import していた。これは repository 直上の host checkout を前提とするパスで、
+fresh clone では `external/` が存在しないため、type-check / bundling が失敗する状態だった。
 
-**修正が方針決定を要求する ADR 課題**。詳細は `docs/adr/0001-tooling-and-package-boundary.md` §5 を参照。
+**Issue #4 で解消済み**: shell を本 repo が所有する
+`src/components/AppFrame.tsx` に置き換え、host 相対 import は 0 件になった。
+同じ形の先例は pilot Tool（`tool-color-palette` PR #6）。
+決定と根拠は [`docs/adr/0001-tooling-and-package-boundary.md`](docs/adr/0001-tooling-and-package-boundary.md) §2.3 を参照。
 
 ## 5. Source code / documentation language policy
 
