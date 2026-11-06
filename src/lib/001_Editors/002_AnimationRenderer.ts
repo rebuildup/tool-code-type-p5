@@ -117,8 +117,14 @@ export function setupAnimationRenderer(
 				p.frameRate(editorManager.getFPS());
 				p.colorMode(p.RGB);
 				p.pixelDensity(1);
-				// Initialize with config size, not window size
-				resizeCanvas(CANVAS_WIDTH, CANVAS_HEIGHT);
+				// Initialize with config size, not window size — but never
+				// wider than the container: inside a 390px frame the fixed
+				// 720px canvas is clipped by the container's overflow:hidden
+				// and the code lines are cut mid-word (measured for
+				// my-web-2026#910). resizeCanvas() without arguments scales
+				// the CSS size down to the container and keeps the internal
+				// resolution, which is what the export path needs.
+				resizeCanvas();
 
 				resourceManager.initialize(p);
 				animations = createAnimations(p, editorManager);
